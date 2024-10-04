@@ -13,7 +13,7 @@ public class Main {
         String[] userData = input.split(" ");
 
         try {
-            // Проверка введённых данных
+            // Проверка количества данных
             if (userData.length != 6) {
                 throw new IllegalArgumentException("Неверное количество данных. Ожидалось 6, получено: " + userData.length);
             }
@@ -31,7 +31,7 @@ public class Main {
             checkPhoneNumber(phoneNumber);
             checkGender(gender);
 
-            // Запись в файл
+            // Создание или запись в файл
             writeToFile(lastName, firstName, middleName, birthDate, phoneNumber, gender);
 
             System.out.println("Данные успешно записаны.");
@@ -42,3 +42,36 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    // Проверка даты
+    private static void checkBirthDate(String birthDate) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        dateFormat.setLenient(false);
+        dateFormat.parse(birthDate);
+    }
+
+    // Проверка телефона
+    private static void checkPhoneNumber(String phoneNumber) {
+        try {
+            Long.parseUnsignedLong(phoneNumber);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Неверный формат телефона: " + phoneNumber);
+        }
+    }
+
+    // Проверка пола
+    private static void checkGender(String gender) {
+        if (!gender.equalsIgnoreCase("m") && !gender.equalsIgnoreCase("f")) {
+            throw new IllegalArgumentException("Неверный формат пола: " + gender + ". Ожидается 'm' или 'f'.");
+        }
+    }
+
+    // Запись в файл
+    private static void writeToFile(String lastName, String firstName, String middleName, String birthDate, String phoneNumber, String gender) throws IOException {
+        String fileName = lastName + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(lastName + " " + firstName + " " + middleName + " " + birthDate + " " + phoneNumber + " " + gender);
+            writer.newLine();
+        }
+    }
+}
